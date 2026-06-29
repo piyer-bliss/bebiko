@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>my bebi</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background-color: #fce4ec;
+    background-image:
+      url('https://www.transparentpng.com/thumb/flowers/pink-flower-png-hd-3.png'),
+      url('https://www.transparentpng.com/thumb/flowers/pink-flower-png-hd-3.png');
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lato', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .flowers {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .flower {
+    position: absolute;
+    opacity: 0.55;
+  }
+
+  .flower svg { width: 100%; height: 100%; }
+
+  .flower.tl { top: -30px; left: -30px; width: 260px; height: 260px; transform: rotate(0deg); }
+  .flower.tr { top: -30px; right: -30px; width: 260px; height: 260px; transform: scaleX(-1); }
+  .flower.bl { bottom: -30px; left: -30px; width: 220px; height: 220px; transform: rotate(90deg) scaleX(-1); }
+  .flower.br { bottom: -30px; right: -30px; width: 220px; height: 220px; transform: rotate(-90deg) scaleX(-1); }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3.8rem;
+    color: #c2185b;
+    margin-bottom: 0.3rem;
+    text-shadow: 1px 1px 3px rgba(194,24,91,0.15);
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: #ad6a82;
+    letter-spacing: 0.04em;
+    margin-bottom: 2.5rem;
+    font-style: italic;
+  }
+
+  .cards {
+    display: flex;
+    gap: 1.4rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .card-wrapper {
+    perspective: 800px;
+    width: 175px;
+    height: 240px;
+  }
+
+  .card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+    cursor: pointer;
+    border-radius: 18px;
+  }
+
+  .card.flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .card-front {
+    background: #fff5f7;
+    border: 1.5px solid #f8bbd0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    box-shadow: 0 4px 18px rgba(194,24,91,0.10);
+  }
+
+  .card-front .heart {
+    font-size: 2.4rem;
+  }
+
+  .card-label {
+    font-size: 0.8rem;
+    color: #ad6a82;
+    font-style: italic;
+    letter-spacing: 0.03em;
+  }
+
+  .card-front .pin {
+    width: 10px;
+    height: 10px;
+    background: #e91e8c;
+    border-radius: 50%;
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 1px 4px rgba(233,30,140,0.3);
+  }
+
+  .card-back {
+    background: #fff9fb;
+    border: 1.5px solid #f8bbd0;
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem 1.3rem 1.5rem;
+    gap: 0.6rem;
+    box-shadow: 0 4px 18px rgba(194,24,91,0.10);
+    overflow-y: auto;
+  }
+
+  .card-back .pin {
+    width: 10px;
+    height: 10px;
+    background: #e91e8c;
+    border-radius: 50%;
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 1px 4px rgba(233,30,140,0.3);
+  }
+
+  .card-back .letter-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.15rem;
+    color: #c2185b;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-back .letter-text {
+    font-size: 0.78rem;
+    color: #9c4d6e;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .floating-hearts {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .fheart {
+    position: absolute;
+    font-size: 1.1rem;
+    animation: floatHeart 5s ease-in infinite;
+    opacity: 0;
+  }
+
+  @keyframes floatHeart {
+    0%   { transform: translateY(0) scale(1); opacity: 0.7; }
+    100% { transform: translateY(-120vh) scale(0.5); opacity: 0; }
+  }
+
+  .back{
+    position:fixed;
+    top:20px;
+    left:20px;
+    text-decoration:none;
+    background:white;
+    color:#ff5d96;
+    padding:10px 20px;
+    border-radius:30px;
+    font-weight:600;
+    box-shadow:0 8px 20px rgba(0,0,0,.1);
+    transition:.3s;
+}
+
+.back:hover{
+    background:#ff5d96;
+    color:white;
+}
+
+</style>
+</head>
+<body>
+
+<a href="sen.html" class="back">← Back</a>
+
+<div class="flowers">
+  <!-- Top Left floral cluster -->
+  <div class="flower tl">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <g opacity="0.85">
+        <ellipse cx="80" cy="80" rx="55" ry="30" fill="#f8bbd0" transform="rotate(-30 80 80)"/>
+        <ellipse cx="80" cy="80" rx="55" ry="30" fill="#f48fb1" transform="rotate(30 80 80)"/>
+        <ellipse cx="80" cy="80" rx="55" ry="30" fill="#fce4ec" transform="rotate(90 80 80)"/>
+        <ellipse cx="80" cy="80" rx="55" ry="30" fill="#f8bbd0" transform="rotate(150 80 80)"/>
+        <circle cx="80" cy="80" r="18" fill="#ffd54f"/>
+        <ellipse cx="140" cy="40" rx="35" ry="18" fill="#f48fb1" transform="rotate(20 140 40)"/>
+        <ellipse cx="140" cy="40" rx="35" ry="18" fill="#fce4ec" transform="rotate(80 140 40)"/>
+        <circle cx="140" cy="40" r="12" fill="#ffcc02"/>
+        <ellipse cx="40" cy="150" rx="30" ry="16" fill="#f8bbd0" transform="rotate(-10 40 150)"/>
+        <ellipse cx="40" cy="150" rx="30" ry="16" fill="#f48fb1" transform="rotate(60 40 150)"/>
+        <circle cx="40" cy="150" r="10" fill="#ffd54f"/>
+        <path d="M80 80 Q100 120 120 160" stroke="#a5d6a7" stroke-width="2" fill="none"/>
+        <ellipse cx="125" cy="165" rx="14" ry="8" fill="#c8e6c9" transform="rotate(30 125 165)"/>
+        <path d="M80 80 Q40 100 20 140" stroke="#a5d6a7" stroke-width="2" fill="none"/>
+        <ellipse cx="18" cy="145" rx="12" ry="7" fill="#dcedc8" transform="rotate(-20 18 145)"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Top Right -->
+  <div class="flower tr">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <g opacity="0.85">
+        <ellipse cx="80" cy="80" rx="55" ry="30" fill="#f8bbd0" transform="rotate(-30 80 80)"/>
+        <ellipse cx="80" cy="80" rx="55" ry="30" fill="#f48fb1" transform="rotate(30 80 80)"/>
+        <ellipse cx="80" cy="80" rx="55" ry="30" fill="#fce4ec" transform="rotate(90 80 80)"/>
+        <ellipse cx="80" cy="80" rx="55" ry="30" fill="#f8bbd0" transform="rotate(150 80 80)"/>
+        <circle cx="80" cy="80" r="18" fill="#ffd54f"/>
+        <ellipse cx="140" cy="40" rx="35" ry="18" fill="#f48fb1" transform="rotate(20 140 40)"/>
+        <ellipse cx="140" cy="40" rx="35" ry="18" fill="#fce4ec" transform="rotate(80 140 40)"/>
+        <circle cx="140" cy="40" r="12" fill="#ffcc02"/>
+        <path d="M80 80 Q100 120 120 160" stroke="#a5d6a7" stroke-width="2" fill="none"/>
+        <ellipse cx="125" cy="165" rx="14" ry="8" fill="#c8e6c9" transform="rotate(30 125 165)"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Bottom Left -->
+  <div class="flower bl">
+    <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+      <g opacity="0.8">
+        <ellipse cx="70" cy="70" rx="45" ry="24" fill="#f48fb1" transform="rotate(-40 70 70)"/>
+        <ellipse cx="70" cy="70" rx="45" ry="24" fill="#fce4ec" transform="rotate(30 70 70)"/>
+        <ellipse cx="70" cy="70" rx="45" ry="24" fill="#f8bbd0" transform="rotate(100 70 70)"/>
+        <circle cx="70" cy="70" r="15" fill="#ffd54f"/>
+        <path d="M70 70 Q90 110 100 140" stroke="#a5d6a7" stroke-width="2" fill="none"/>
+        <ellipse cx="104" cy="145" rx="12" ry="7" fill="#c8e6c9" transform="rotate(20 104 145)"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Bottom Right -->
+  <div class="flower br">
+    <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+      <g opacity="0.8">
+        <ellipse cx="70" cy="70" rx="45" ry="24" fill="#f48fb1" transform="rotate(-40 70 70)"/>
+        <ellipse cx="70" cy="70" rx="45" ry="24" fill="#fce4ec" transform="rotate(30 70 70)"/>
+        <ellipse cx="70" cy="70" rx="45" ry="24" fill="#f8bbd0" transform="rotate(100 70 70)"/>
+        <circle cx="70" cy="70" r="15" fill="#ffd54f"/>
+        <path d="M70 70 Q90 110 100 140" stroke="#a5d6a7" stroke-width="2" fill="none"/>
+        <ellipse cx="104" cy="145" rx="12" ry="7" fill="#c8e6c9" transform="rotate(20 104 145)"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<!-- Floating hearts -->
+<div class="floating-hearts" id="floatingHearts"></div>
+
+<div class="content">
+  <h1>for my bebi</h1>
+  <p class="subtitle">tap it mwehehehe</p>
+
+  <div class="cards">
+
+    <!-- Card 1 -->
+    <div class="card-wrapper">
+      <div class="card" id="card1" onclick="flipCard('card1')">
+        <div class="card-front">
+          <div class="pin"></div>
+          <div class="heart">🌸</div>
+          <div class="card-label">i love you so much</div>
+        </div>
+        <div class="card-back">
+          <div class="pin"></div>
+          <div class="letter-title">hayi bebi,</div>
+          <div class="letter-text">i love you more than words could ever explain. you make every ordinary day feel like something special, and i am so thankful every day that i get to call you mineee. i love youuu, always in all ways.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card-wrapper">
+      <div class="card" id="card2" onclick="flipCard('card2')">
+        <div class="card-front">
+          <div class="pin"></div>
+          <div class="heart">💗</div>
+          <div class="card-label">my person</div>
+        </div>
+        <div class="card-back">
+          <div class="pin"></div>
+          <div class="letter-title">bebiii,</div>
+          <div class="letter-text">out of everyone in this world, it's you. you're the one i want to be with, the one i want to hold, and the one i want by my side through everything. you're my person, and that will never change.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card-wrapper">
+      <div class="card" id="card3" onclick="flipCard('card3')">
+        <div class="card-front">
+          <div class="pin"></div>
+          <div class="heart">💝</div>
+          <div class="card-label">future</div>
+        </div>
+        <div class="card-back">
+          <div class="pin"></div>
+          <div class="letter-title">dear bebi AHSAHSD,</div>
+          <div class="letter-text">i think about our future and it makes me smile every single time. every dream i have, i see you in it. i can't wait to build a life with you, one full of love, and so many happy memories together.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function flipCard(id) {
+    document.getElementById(id).classList.toggle('flipped');
+    spawnHearts();
+  }
+
+  function spawnHearts() {
+    const container = document.getElementById('floatingHearts');
+    for (let i = 0; i < 5; i++) {
+      const h = document.createElement('span');
+      h.classList.add('fheart');
+      h.textContent = ['💗','💕','💖','🌸','💓'][Math.floor(Math.random()*5)];
+      h.style.left = (10 + Math.random() * 80) + '%';
+      h.style.bottom = (Math.random() * 20) + '%';
+      h.style.animationDelay = (Math.random() * 0.8) + 's';
+      h.style.animationDuration = (3 + Math.random() * 3) + 's';
+      container.appendChild(h);
+      setTimeout(() => h.remove(), 6000);
+    }
+  }
+
+  // Ambient floating hearts
+  setInterval(() => {
+    const container = document.getElementById('floatingHearts');
+    const h = document.createElement('span');
+    h.classList.add('fheart');
+    h.textContent = ['💗','💕','💖','🌸'][Math.floor(Math.random()*4)];
+    h.style.left = (5 + Math.random() * 90) + '%';
+    h.style.bottom = '0';
+    h.style.fontSize = (0.7 + Math.random() * 0.8) + 'rem';
+    h.style.animationDuration = (4 + Math.random() * 4) + 's';
+    container.appendChild(h);
+    setTimeout(() => h.remove(), 8000);
+  }, 1200);
+</script>
+</body>
+</html>
